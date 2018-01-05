@@ -119,25 +119,25 @@ int main(int argc, char* argv[])
                 }
             }
 
-            // add new padding
-            for (int k = 0; k < new_padding; k++)
-                fputc(0x00, outptr);
+            // skip over padding in infile
+			fseek(inptr, padding, SEEK_CUR);
 
-            // seek back to the beginning of row in input file, but not after iteration of printing
-            if (row < (n - 1))
-                fseek(inptr, -(bi.biWidth * sizeof(RGBTRIPLE)), SEEK_CUR);
+			// then add it to outfile
+			for (int k = 0; k < new_padding; k++)
+			    fputc(0x00, outptr);
+
+			fseek(inptr, -(bi.biWidth * 3 + padding ), SEEK_CUR);
+
         }
-
-        // skip over padding, if any
-        fseek(inptr, padding, SEEK_CUR);
+			fseek(inptr, bi.biWidth*3+padding, SEEK_CUR);
     }
 
-    // close infile
-    fclose(inptr);
+		// close infile
+		fclose(inptr);
 
-    // close outfile
-    fclose(outptr);
+		// close outfile
+		fclose(outptr);
 
-    // that's all folks
-    return 0;
+		// that's all folks
+		return 0;
 }
